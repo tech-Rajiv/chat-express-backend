@@ -43,7 +43,17 @@ export const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.json({ message: "Login successful", token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true on Render
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    res.json({
+      message: "Login successful",
+      user: { id: user.id, email: user.email, name: user.name },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong" });
