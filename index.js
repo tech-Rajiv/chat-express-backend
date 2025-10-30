@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
@@ -17,6 +18,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(cookieParser()); // ✅ enable cookie parsing
 
 // ✅ Routes
 app.use("/api", authRoutes);
