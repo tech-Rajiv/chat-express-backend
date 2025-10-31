@@ -9,9 +9,9 @@ import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 
 dotenv.config();
-app.set("trust proxy", 1);
 const app = express();
 
+app.set("trust proxy", 1);
 // ✅ Middlewares
 app.use(express.json());
 app.use(
