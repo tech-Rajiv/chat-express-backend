@@ -22,9 +22,10 @@ export const loginUser = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true for vercel/render
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: process.env.NODE_ENV === "production", // ✅ true for Render/Vercel
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ required for cross-domain
+      path: "/", // ✅ ensures it's sent on all routes
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.json({

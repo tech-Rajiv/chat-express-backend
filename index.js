@@ -5,12 +5,11 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import { Server } from "socket.io";
 
-// ✅ Routes
 import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 
 dotenv.config();
-
+app.set("trust proxy", 1);
 const app = express();
 
 // ✅ Middlewares
