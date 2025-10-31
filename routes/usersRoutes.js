@@ -4,9 +4,12 @@ import { getAllUsers } from "../controllers/user/getAllUsers.js";
 import { verifyToken } from "../middlewares/authMiddleware.js";
 import { getUserProfile } from "../controllers/user/getUserProfile.js";
 
-const router = express.Router();
+function usersRoutes() {
+  const router = express.Router();
 
-router.get("/all-users", verifyToken, getAllUsers);
-router.post("/get-user-profile", verifyToken, getUserProfile);
+  router.get("/all-users", verifyToken, getAllUsers);
+  router.post("/get-user-profile", verifyToken, getUserProfile);
+  return router;
+}
 
-export default router;
+export default usersRoutes;

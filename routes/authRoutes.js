@@ -6,14 +6,17 @@ import { loginUser } from "../controllers/auth/loginController.js";
 import { registerUser } from "../controllers/auth/SignupController.js";
 import { myAuthDetails } from "../controllers/auth/myAuthController.js";
 
-const router = express.Router();
+function authRoutes() {
+  const router = express.Router();
 
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.get("/me", verifyToken, myAuthDetails);
-router.get("/dashboard", verifyToken, async (req, res) => {
-  res.json({ message: `Welcome user ${req.user.id}` });
-});
-router.post("/logout", logoutUser);
+  router.post("/register", registerUser);
+  router.post("/login", loginUser);
+  router.get("/me", verifyToken, myAuthDetails);
+  router.get("/dashboard", verifyToken, async (req, res) => {
+    res.json({ message: `Welcome user ${req.user.id}` });
+  });
+  router.post("/logout", logoutUser);
+  return router;
+}
 
-export default router;
+export default authRoutes;

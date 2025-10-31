@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 
 import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -21,10 +22,13 @@ app.use(
   })
 );
 app.use(cookieParser());
-
+app.use((req, res, next) => {
+  console.log("➡️ Incoming:", req.method, req.url);
+  next();
+});
 // ✅ API Routes
-app.use("/api", authRoutes);
-app.use("/users", usersRoutes);
+app.use("/api", authRoutes());
+app.use("/users", usersRoutes());
 
 // ✅ Health check route
 app.get("/", (req, res) => {
@@ -51,6 +55,8 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`📥 User ${socket.id} joined room: ${roomId}`);
   });
+
+  app.use("/chats", chatRoutes(io));
 
   // Handle sending messages
   socket.on("send_message", (data) => {

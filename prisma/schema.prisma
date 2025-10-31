@@ -7,13 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Message {
+  id          Int           @id @default(autoincrement())
+  text        String
+  createdAt   DateTime      @default(now())
+  senderId    Int
+  receiverId  Int
+  sender      User          @relation("SentMessages", fields: [senderId], references: [id])
+  receiver    User          @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  status      MessageStatus @default(PENDING)
+
+    @@map("messages")
+}
+
+enum MessageStatus {
+  PENDING    // frontend created but not yet confirmed by backend
+  SENT       // saved in DB successfully
+  DELIVERED  // received by recipient
+  READ       // seen by recipient
+  FAILED     // could not be sent (network or server error)
+}
+
+
 model User {
   id       Int      @id @default(autoincrement())
   name     String
   email    String   @unique
   password String
-  // 👇 This connects back to Profile
+
   profile  Profile?
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model Profile {
@@ -22,6 +47,5 @@ model Profile {
   status     String?
   userId     Int       @unique
 
-  // 👇 This connects to User
   user       User      @relation(fields: [userId], references: [id])
 }
