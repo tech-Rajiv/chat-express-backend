@@ -4,11 +4,13 @@ import { verifyToken } from "../middlewares/authMiddleware.js";
 import { logoutUser } from "../controllers/auth/LogoutController.js";
 import { loginUser } from "../controllers/auth/loginController.js";
 import { registerUser } from "../controllers/auth/SignupController.js";
+import { myAuthDetails } from "../controllers/auth/myAuthController.js";
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.get("/me", verifyToken, myAuthDetails);
 router.get("/dashboard", verifyToken, async (req, res) => {
   res.json({ message: `Welcome user ${req.user.id}` });
 });
