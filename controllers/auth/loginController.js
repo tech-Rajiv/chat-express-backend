@@ -19,16 +19,17 @@ export const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // ✅ true for Render/Vercel
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ required for cross-domain
-      path: "/", // ✅ ensures it's sent on all routes
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production", // ✅ true for Render/Vercel
+    //   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // ✅ required for cross-domain
+    //   path: "/", // ✅ ensures it's sent on all routes
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // });
 
     res.json({
       message: "Login successful",
+      token,
       user: { id: user.id, email: user.email, name: user.name },
     });
   } catch (error) {
