@@ -1,11 +1,14 @@
-export const storeAndSendChat = async (req, res, io) => {
-  console.log("inside chat send controler");
-  try {
-    const { senderId, receiverId, content } = req.body;
+import {prisma} from '../../prismaClient.js'
 
+export const storeAndSendChat = async (req, res, io) => {
+  console.log("inside chat send controler sdfsdfsd");
+  try {
+    const body = req.body
+    console.log('body ', body)
+    const {senderId,receiverId,content} = req.body;
+    console.log('body senderId,receiverId,content', senderId,receiverId,content)
     if (!senderId || !receiverId || !content) {
       console.log("missing feeilds");
-
       return res.status(400).json({ message: "Missing fields" });
     }
 
@@ -14,7 +17,7 @@ export const storeAndSendChat = async (req, res, io) => {
       data: {
         senderId,
         receiverId,
-        content,
+        text:content,
       },
     });
 
