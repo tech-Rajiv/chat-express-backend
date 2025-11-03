@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 
 import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
-import chatRoutes from "./routes/chatRoutes.js";
+import socketHandler from "./socket/socketHandler.js";
 
 dotenv.config();
 const app = express();
@@ -45,31 +45,28 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+socketHandler(io);
 
-// ✅ Socket.io Logic
-io.on("connection", (socket) => {
-  console.log("🟢 User connected:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("🟢 User connected:", socket.id);
 
-  // User joins a specific room (like a chat with another user)
-  socket.on("join_room", (roomId) => {
-    socket.join(roomId);
-    console.log(`📥 User ${socket.id} joined room: ${roomId}`);
-  });
+//   // User joins a specific room (like a chat with another user)
+//   socket.on("join_room", (roomId) => {
+//     socket.join(roomId);
+//     console.log(`📥 User ${socket.id} joined room: ${roomId}`);
+//   });
 
-  app.use("/chats", chatRoutes(io));
+//   // Handle sending messages
+//   socket.on("send_message", (data) => {
+//     console.log("💬 Message received:", data);
+//     io.to(data?.roomId).emit("receive_message", data);
+//   });
 
-  // Handle sending messages
-  socket.on("send_message", (data) => {
-    console.log("💬 Message received:", data);
-    io.to(data.roomId).emit("receive_message", data);
-  });
+//   socket.on("disconnect", () => {
+//     console.log("🔴 User disconnected:", socket.id);
+//   });
+// });
 
-  socket.on("disconnect", () => {
-    console.log("🔴 User disconnected:", socket.id);
-  });
-});
-
-// ✅ Start server (IMPORTANT: use server.listen)
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
   console.log(`🚀 Server running with Socket.io on port ${PORT}`);

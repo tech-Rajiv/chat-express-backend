@@ -1,13 +1,19 @@
-import {prisma} from '../../prismaClient.js'
+import { prisma } from "../../prismaClient.js";
 
 export const storeAndSendChat = async (req, res, io) => {
-  console.log("inside chat send controler sdfsdfsd");
+  console.log("inside chat send controler");
   try {
-    const body = req.body
-    console.log('body ', body)
-    const {senderId,receiverId,content} = req.body;
-    console.log('body senderId,receiverId,content', senderId,receiverId,content)
-    if (!senderId || !receiverId || !content) {
+    const body = req.body;
+    console.log("body ", body);
+    const { senderId, receiverId, text, tempId } = req.body;
+    console.log(
+      "body senderId,receiverId,text",
+      senderId,
+      receiverId,
+      text,
+      tempId
+    );
+    if (!senderId || !receiverId || !text || !tempId) {
       console.log("missing feeilds");
       return res.status(400).json({ message: "Missing fields" });
     }
@@ -17,12 +23,17 @@ export const storeAndSendChat = async (req, res, io) => {
       data: {
         senderId,
         receiverId,
-        text:content,
+        text,
+        status: "SENT",
       },
     });
 
+    io.on("send_message", () => {
+      console.log("with sockettttt brooooo");
+    });
+    const roomId = [senderId, receiverId].sort().join("_");
     // emit socket event
-    io.to(receiverId).emit("receive_message", message);
+    io.to(roomId).emit("receive_message", { ...message, tempId });
 
     return res.status(200).json({ success: true, message });
   } catch (err) {
