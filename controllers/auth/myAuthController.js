@@ -17,8 +17,9 @@ export const myAuthDetails = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    const { password, ...safeUser } = user;
 
-    res.status(200).json({ data: user });
+    res.status(200).json({ data: safeUser });
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: "Internal server error" });

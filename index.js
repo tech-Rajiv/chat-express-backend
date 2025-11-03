@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import socketHandler from "./socket/socketHandler.js";
+import chatRoutes from "./routes/chatRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 // ✅ API Routes
 app.use("/api", authRoutes());
 app.use("/users", usersRoutes());
+app.use("/chats", chatRoutes());
 
 // ✅ Health check route
 app.get("/", (req, res) => {
@@ -46,26 +48,6 @@ const io = new Server(server, {
   },
 });
 socketHandler(io);
-
-// io.on("connection", (socket) => {
-//   console.log("🟢 User connected:", socket.id);
-
-//   // User joins a specific room (like a chat with another user)
-//   socket.on("join_room", (roomId) => {
-//     socket.join(roomId);
-//     console.log(`📥 User ${socket.id} joined room: ${roomId}`);
-//   });
-
-//   // Handle sending messages
-//   socket.on("send_message", (data) => {
-//     console.log("💬 Message received:", data);
-//     io.to(data?.roomId).emit("receive_message", data);
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("🔴 User disconnected:", socket.id);
-//   });
-// });
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {

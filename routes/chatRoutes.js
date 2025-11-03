@@ -1,14 +1,12 @@
 import express from "express";
 
 import { verifyToken } from "../middlewares/authMiddleware.js";
-import { storeAndSendChat } from "../controllers/chat/sendChat.js";
+import { getOldChats } from "../controllers/chat/getOldChats.js";
 
-export default function chatRoutes(io) {
+export default function chatRoutes() {
   const router = express.Router();
   console.log("chatroute fn ran");
-  router.post("/send", verifyToken, (req, res) =>
-    storeAndSendChat(req, res, io)
-  );
+  router.post("/messages", verifyToken, getOldChats);
 
   return router;
 }

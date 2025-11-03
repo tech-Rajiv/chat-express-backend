@@ -1,10 +1,7 @@
 import { prisma } from "../prismaClient.js";
 
-export const createOrGetRoom = async (senderId, receiverId) => {
+export const createOrGetRoom = async (roomKey) => {
   try {
-    // Sort ids to ensure unique combination no matter who sends first
-    const roomKey = [senderId, receiverId].sort().join("_");
-
     // Check if room already exists
     let room = await prisma.room.findUnique({
       where: { roomKey }, // because we’ll make roomKey unique in schema

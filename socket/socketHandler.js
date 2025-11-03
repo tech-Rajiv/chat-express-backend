@@ -14,21 +14,22 @@ export default async function socketHandler(io) {
     // Handle send_message event
     socket.on("send_message", async (data) => {
       console.log("💬 Message received:", data);
-      const { tempId, senderId, receiverId, text, status } = data;
+      const { tempId, senderId, receiverId, text } = data;
       try {
-        const room = await createOrGetRoom(senderId, receiverId);
-        console.log("room: from try of parent", room);
+        const roomKey = [senderId, receiverId].sort().join("_");
+        const { id: roomId } = await createOrGetRoom(roomKey);
+        console.log("room iddd", roomId);
 
         const dataFromDb = await saveMessageToDB(
           senderId,
           receiverId,
           text,
-          room?.id
+          roomId
         );
         console.log("dataFromDb: ", dataFromDb);
 
         // // Broadcast to everyone in that room
-        io.to(room?.roomKey).emit("receive_message", {
+        io.to(roomKey).emit("receive_message", {
           ...dataFromDb,
           tempId,
         });
