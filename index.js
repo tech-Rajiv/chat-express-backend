@@ -43,7 +43,11 @@ const server = http.createServer(app);
 // ✅ Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://chat-next-fullstack.vercel.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://chat-next-fullstack.vercel.app",
+      "https://chat-express-ovf0.onrender.com",
+    ],
     credentials: true,
   },
 });
