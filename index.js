@@ -14,7 +14,7 @@ dotenv.config();
 const app = express();
 
 app.set("trust proxy", 1);
-// ✅ Middlewares
+
 app.use(express.json());
 app.use(
   cors({
@@ -43,11 +43,7 @@ const server = http.createServer(app);
 // ✅ Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "https://chat-next-fullstack.vercel.app",
-      "https://chat-express-ovf0.onrender.com",
-    ],
+    origin: ["http://localhost:3000", "https://chat-next-fullstack.vercel.app"],
     credentials: true,
   },
 });

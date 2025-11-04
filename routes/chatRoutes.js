@@ -5,7 +5,6 @@ import { getOldChats } from "../controllers/chat/getOldChats.js";
 
 export default function chatRoutes() {
   const router = express.Router();
-  console.log("chatroute fn ran");
   router.post("/messages", verifyToken, getOldChats);
 
   return router;
