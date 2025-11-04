@@ -1,64 +1,85 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
-  email    String   @unique
+  email    String @unique
   password String
 
-  profile  Profile?
+  profile Profile?
 
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
 
-  rooms RoomMember[]
+  rooms        RoomMember[]
+  createdRooms Room[]       @relation("UserCreatedRooms")
 }
 
 model Profile {
-  id         Int       @id @default(autoincrement())
-  avatarUrl  String?
-  status     String?
-  userId     Int       @unique
+  id        Int     @id @default(autoincrement())
+  avatarUrl String?
+  status    String?
+  userId    Int     @unique
 
-  user       User      @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Room {
-  id        Int          @id @default(autoincrement())
-  roomKey   String       @unique // e.g. "1_2" for private, or random UUID for groups
-  createdAt DateTime     @default(now())
-  messages  Message[]
-  members   RoomMember[]
+  id        Int      @id @default(autoincrement())
+  roomKey   String   @unique
+  createdAt DateTime @default(now())
+
+  // Identify type
+  isGroup Boolean @default(false)
+
+  //Group-related metadata
+  groupName   String? // e.g. "Dev Team"
+  groupBio    String? // optional group description
+  groupAvatar String? // URL for group avatar
+  createdById Int? // user who created the group
+
+  createdBy User? @relation("UserCreatedRooms", fields: [createdById], references: [id])
+
+  // Relations
+  messages Message[]
+  members  RoomMember[]
 }
 
 model RoomMember {
-  id      Int   @id @default(autoincrement())
-  userId  Int
-  roomId  Int
-  user    User  @relation(fields: [userId], references: [id])
-  room    Room  @relation(fields: [roomId], references: [id])
+  id     Int        @id @default(autoincrement())
+  userId Int
+  roomId Int
+  role   MemberRole @default(MEMBER) // new field
+  user   User       @relation(fields: [userId], references: [id])
+  room   Room       @relation(fields: [roomId], references: [id])
 
   @@unique([userId, roomId]) // A user cannot join the same room twice
 }
 
+enum MemberRole {
+  ADMIN
+  MEMBER
+}
+
 model Message {
-  id          Int           @id @default(autoincrement())
-  text        String
-  createdAt   DateTime      @default(now())
-  senderId    Int
-  receiverId  Int?
-  roomId      Int?
-  sender      User          @relation("SentMessages", fields: [senderId], references: [id])
-  receiver    User?         @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  room        Room?         @relation(fields: [roomId], references: [id])
-  status      MessageStatus @default(PENDING)
+  id         Int           @id @default(autoincrement())
+  text       String
+  createdAt  DateTime      @default(now())
+  senderId   Int
+  receiverId Int?
+  roomId     Int?
+  sender     User          @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User?         @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  room       Room?         @relation(fields: [roomId], references: [id])
+  status     MessageStatus @default(PENDING)
 
   @@map("messages")
 }
