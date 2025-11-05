@@ -4,9 +4,17 @@ import { saveMessageToDB, seenMessageUpdate } from "./messageService.js";
 export const handleSendMessage = async (io, socket, data) => {
   try {
     const { senderId, tempId, receiverId, text } = data;
+    console.log(
+      " senderId, tempId, receiverId, text : ",
+      senderId,
+      tempId,
+      receiverId,
+      text
+    );
+
     const roomKey = [senderId, receiverId].sort().join("_");
 
-    const { id: roomId } = await createOrGetRoom(roomKey);
+    const { id: roomId } = await createOrGetRoom(roomKey, senderId, receiverId);
     const savedMessage = await saveMessageToDB(
       senderId,
       receiverId,
@@ -20,7 +28,7 @@ export const handleSendMessage = async (io, socket, data) => {
   } catch (error) {
     console.error("❌ Failed to handle message:", error);
 
-    socket.emit("message_failed", { tempId, error: "Message not saved" });
+    socket.emit("message_failed", { error: "Message not saved" });
   }
 };
 

@@ -1,6 +1,6 @@
 import { prisma } from "../prismaClient.js";
 
-export const createOrGetRoom = async (roomKey) => {
+export const createOrGetRoom = async (roomKey, senderId, receiverId) => {
   try {
     // Check if room already exists
     let room = await prisma.room.findUnique({
