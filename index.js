@@ -9,6 +9,7 @@ import authRoutes from "./routes/authRoutes.js";
 import usersRoutes from "./routes/usersRoutes.js";
 import socketHandler from "./socket/socketHandler.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import groupRoutes from "./routes/groupRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 app.use("/api", authRoutes());
 app.use("/users", usersRoutes());
 app.use("/chats", chatRoutes());
+app.use("/group", groupRoutes());
 
 // ✅ Health check route
 app.get("/", (req, res) => {

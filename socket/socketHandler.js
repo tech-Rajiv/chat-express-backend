@@ -14,7 +14,6 @@ export default async function socketHandler(io) {
     socket.on("send_message", (data) => handleSendMessage(io, socket, data));
     socket.on("seen_message", (data) => handleSeenMessage(io, socket, data));
 
-    socket.on("message_seen", (key, msgId) => ha);
     socket.on("disconnect", () => {
       console.log("🔴 User disconnected:", socket.id);
     });
