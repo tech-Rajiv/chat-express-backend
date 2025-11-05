@@ -10,6 +10,7 @@ export const getUserProfile = async (req, res) => {
         id: true,
         name: true,
         email: true,
+        profile: true,
       },
     });
     return res.json({ data: user });
