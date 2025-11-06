@@ -12,10 +12,8 @@ export const getOldChats = async (req, res) => {
     const messages = await prisma.message.findMany({
       where: { roomId },
       orderBy: { createdAt: "desc" },
-      take: 20,
+      take: 50,
     });
-    // messages.reverse();
-    // console.log("messages : ", messages);
     res.json({ sucess: true, messages });
   } catch (error) {
     console.log("error geting old messages");
